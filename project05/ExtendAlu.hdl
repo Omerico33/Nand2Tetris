@@ -1,0 +1,52 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+
+// The ExtendAlu chip is an extension of the standard ALU which also supports
+// shift operations.
+// The inputs of the extended ALU are instruction[9], x[16], y[16].
+// The "ng" and "zr" output pins behave the same as in the regular ALU.
+// The "out" output is defined as follows:
+// If instruction[8]=1 and instruction[7]=1 the output is identical to the 
+// regular ALU, where:
+// instruction[5]=zx, instruction[4]=nx, ..., instruction[0]=no
+// Else, if instruction[8]=0 and instruction[7]=1, the output is a shift:
+// - If instruction[4] == 0, the input "y" will be shifted, otherwise "x".
+// - If instruction[5] == 0, the shift will be a right-shift, otherwise left.
+// - All other inputs are undefined.
+
+CHIP ExtendAlu {
+     IN x[16], y[16], instruction[9];
+     OUT out[16], zr, ng;
+     
+     PARTS:
+     ALU(x=x, y=y, zx=instruction[5], nx=instruction[4], zy=instruction[3], ny=instruction[2], f=instruction[1], no=instruction[0], out=regout, zr=regzr, ng=regng);
+	 Mux16(a=y, b=x, sel=instruction[4], out=shiftin);
+	 ShiftLeft(in=shiftin, out=shiftleftout);
+	 ShiftRight(in=shiftin, out=shiftrightout);
+	 Mux16(a=shiftrightout, b=shiftleftout, sel=instruction[5], out=shiftout);
+	 Mux16(a=shiftrightout, b=shiftleftout, sel=instruction[5], out[0]=shiftout0, out[1]=shiftout1, out[2]=shiftout2, out[3]=shiftout3, out[4]=shiftout4, out[5]=shiftout5, out[6]=shiftout6, out[7]=shiftout7, out[8]=shiftout8, out[9]=shiftout9, out[10]=shiftout10, out[11]=shiftout11, out[12]=shiftout12, out[13]=shiftout13, out[14]=shiftout14, out[15]=shiftout15);	 
+	 Or(a=shiftout0, b=shiftout1, out=or0);
+	 Or(a=or0, b=shiftout2, out=or1);
+	 Or(a=or1, b=shiftout3, out=or2);
+	 Or(a=or2, b=shiftout4, out=or3);
+	 Or(a=or3, b=shiftout5, out=or4);
+	 Or(a=or4, b=shiftout6, out=or5);
+	 Or(a=or5, b=shiftout7, out=or6);
+	 Or(a=or6, b=shiftout8, out=or7);
+	 Or(a=or7, b=shiftout9, out=or8);
+	 Or(a=or8, b=shiftout10, out=or9);
+	 Or(a=or9, b=shiftout11, out=or10);
+	 Or(a=or10, b=shiftout12, out=or11);
+	 Or(a=or11, b=shiftout13, out=or12);
+	 Or(a=or12, b=shiftout14, out=or13);
+	 Or(a=or13, b=shiftout15, out=or14);
+	 Not(in=or14, out=shiftzr);
+	 And(a=shiftout15, b=or13, out=shiftng);
+	 Mux16(a=shiftout, b=regout, sel=instruction[8], out=out);
+	 Mux(a=shiftzr, b=regzr, sel=instruction[8], out=zr);
+	 Mux(a=shiftng, b=regng, sel=instruction[8], out=ng);
+}

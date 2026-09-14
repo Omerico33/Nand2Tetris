@@ -1,0 +1,36 @@
+/** A Grid, representing a matrix of Cells. */
+class Grid {
+	field Array cells; // An Array of Cell-Arrays.
+	
+	constructor Grid new(int rows, int columns) {
+		var int i, j;
+		var Array row;
+		
+		let cells = Array.new(rows);
+		let i = 0;
+		while (i < rows) {
+			let row = Array.new(columns);
+			let cells[i] = row;
+			let j = 0;
+			while (j < columns) {
+				let row[j] = Cell.new();
+				let j = j + 1;
+			}
+			let i = i + 1;
+		}
+		
+		return this;
+	}
+	
+	/*	Gets the Cell in the place (i,j).
+		Note that no setter is required,
+		since this getter returns a
+		pointer to the Cell, from which
+		we can alter this very Cell. */
+	method Cell get(int i, int j) {
+		var Array row;
+		
+		let row = cells[i];
+		return row[j];
+	}
+}

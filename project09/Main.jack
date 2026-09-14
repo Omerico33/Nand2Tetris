@@ -1,0 +1,48 @@
+class Main {
+	/* 	This rather self explanatory function, is responsible for the main flow of the game.
+		Each turn we wait for a keyboard direction input (Keyboard.UP, Keyboard.DOWN,
+		Keyboard.LEFT, Keyboard.RIGHT) from the user for <threshold> loop iterations and
+		then we update the game board accordingly. If the user did not insert any input, the
+		default direction would be 0, in which case the direction of the snake head will
+		remain as it was in the previous turn.
+		The Snake.update function returns a boolean value, indicating whether the game
+		continue or not. */
+	function void main() {
+		var Snake snake_game; // The game board.
+		var boolean game_on; // Indicates if the game continue or not.
+		var int threshold, i, pressed_key;
+		var int START_THRESHOLD, MIN_THRESHOLD, K;
+		var int LEFT, UP, RIGHT, DOWN;
+		
+		let START_THRESHOLD = 4096; // The initial number of loop iterations to wait at the beginning of the game.
+		let MIN_THRESHOLD = 1024; // The minimal number of loop iterations to wait.
+		let K = 128;
+		/* Keyboard arrows constants */
+		let LEFT = 130;
+		let UP = 131;
+		let RIGHT = 132;
+		let DOWN = 133;
+		
+		let game_on = true;
+		let snake_game = Snake.new();
+		while (game_on) {
+			/*	The threshold variable determines the speed of the game.
+				As the game advances the speed increases, that is the
+				bigger the snake the faster. */
+			let threshold = Math.max(MIN_THRESHOLD, START_THRESHOLD - (K * (snake_game.getLength() - 2)));
+			let i = 0;
+			let pressed_key = 0;
+			while (i < threshold) { // Runs <threshold> times to stall the game, in order to adjust it to the desired speed.
+				/* During this idle time also wait for a Keyboard input from the user for direction update. */
+				if (~((pressed_key = DOWN) | (pressed_key = UP) | (pressed_key = LEFT) | (pressed_key = RIGHT))) {
+					let pressed_key = Keyboard.keyPressed();
+				}
+				let i = i + 1;
+			}
+			let game_on = snake_game.update(pressed_key); // Update the game board.
+		}
+		do snake_game.gameOver();
+		
+		return;
+	}
+}

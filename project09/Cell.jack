@@ -1,0 +1,41 @@
+/** Represents a cell in the grid of the Snake game board.
+	Each cell contains a content which can be:	EMPTY - 0
+												SNAKE - 1
+												FRUIT - 2
+	and a direction of the cell, which is relevant only
+	when the cell contains part of the snake (content = 1),
+	in which case gets one of the values Keyboard.UP,
+	Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT. */
+class Cell {
+	field int content;
+	field int direction;
+	
+	constructor Cell new() {
+		let content = 0; // Default content value - Empty.
+		let direction = 0; // Defaualt direction value - 0 (which is non of Keyboard.UP, Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT)
+		
+		return this;
+	}
+	
+	/* Getters */
+	
+	method int getContent() {
+		return content;
+	}
+	
+	method int getDirection() {
+		return direction;
+	}
+	
+	/* Setters */
+	
+	method void setContent(int new_content) {
+		let content = new_content;
+		return;
+	}
+	
+	method void setDirection(int new_direction) {
+		let direction = new_direction;
+		return;
+	}
+}
